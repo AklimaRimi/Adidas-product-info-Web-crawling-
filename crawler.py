@@ -306,7 +306,7 @@ except:
 
 
 if __name__ == '__main__':
-	cpu  =  4
+	cpu  =  mp.cpu_count() - 2
 	li = []
 	x = len(link) //cpu
 	for i in range(cpu):

@@ -28,7 +28,7 @@ If you want to run the code you have to follow some instructions.
    ```
 3. Then in the same **cmd** write
    ```python
-   python program.py
+   python crawler.py
    ```
 
 # Note: To finish running, you need stable network connection.

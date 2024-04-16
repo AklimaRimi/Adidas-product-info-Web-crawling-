@@ -7,10 +7,24 @@ import time
 import os
 import multiprocessing  as mp
 
-
-
-
 link = []
+
+# Managing files
+if os.path.exists('productData.csv') == False:
+    df = pd.DataFrame(columns = ['Product Link','Breadcrumb(Category)','Category','Product Name','Pricing','Available Size','Sense Size','Image URL','Description Title','Description','Description(Itemization)','Special Function','Rating','Number of Reviews','Recommendation Rate','Fitting Rating','Length Rating','Material Rating','Comfort Rating','KWs'])
+    df.to_csv('productData.csv',index=False)
+
+if os.path.exists('coordinateData.csv') == False:
+    df = pd.DataFrame(columns = ['Product Link','Coordinated Product Name','Coordinated Product Price','Coordinated Product Number','Coordinated Product Image Link','Coordinated Product Page URL'])
+    df.to_csv('coordinateData.csv',index=False)
+    
+if os.path.exists('ratingData.csv') == False:
+    df = pd.DataFrame(columns = ['Product Link','Review Rating','Review Date','Review Title','Review Description','Review ID'])
+    df.to_csv('ratingData.csv',index=False)
+    
+if os.path.exists('table.csv') == False:
+    df = pd.DataFrame(columns = ['Product name','Table'])
+    df.to_csv('table.csv',index=False)
 
 if os.path.exists('links.csv') == False:
 	driver = webdriver.Chrome()
@@ -29,7 +43,9 @@ if os.path.exists('links.csv') == False:
 
 	link = pd.DataFrame(link,columns=['Links'])
 	link.to_csv('links.csv',index = False)
-
+ 
+ 
+# Helper function for crawling data
 def crawling(link):
 	
 	driver = webdriver.Chrome()
@@ -175,7 +191,6 @@ def crawling(link):
 		rating = ''
 		count_rating = ''
 		positive_pct = ''
-
 		try:
 			rating = driver.find_element(By.XPATH,"//div[@class='BVRRRatingNormalOutOf']/span[1]").text
 			count_rating = driver.find_element(By.XPATH,"//span[@class='BVRRNumber BVRRBuyAgainTotal']").text
@@ -254,9 +269,6 @@ def crawling(link):
 				action = ActionChains(driver)
 				action.click(button).perform()
 				time.sleep(2)
-			
-			
-
 		except:
 			user_rating = driver.find_elements(By.XPATH,"//div[@id='BVRRRatingOverall_Review_Display']/div[2]/img")
 			review_rating = driver.find_elements(By.XPATH,"//div[@id='BVRRRatingOverall_Review_Display']/div[2]/img")
@@ -291,8 +303,6 @@ def crawling(link):
 			pass
 		
 		
- 		
- 
 	driver.close()
 
 
@@ -306,7 +316,7 @@ except:
 
 
 if __name__ == '__main__':
-	cpu  =  mp.cpu_count() - 2
+	cpu  =  4
 	li = []
 	x = len(link) //cpu
 	for i in range(cpu):
@@ -320,13 +330,13 @@ if __name__ == '__main__':
 	pool.map(crawling,li)
  
  
+ 
+# build Spreadsheet 
 df1 = pd.read_csv('productData.csv')
 df2 = pd.read_csv('coordinateData.csv')
 df2 = df2.groupby('Product Link').apply(lambda x: x[['Coordinated Product Name','Coordinated Product Price','Coordinated Product Number','Coordinated Product Image Link','Coordinated Product Page URL']].reset_index(drop=True))
-
 df3 =pd.read_csv('ratingData.csv')
 df3 = df3.groupby('Product Link').apply(lambda x: x[['Review Rating','Review Date','Review Title','Review Description','Review ID']].reset_index(drop=True))
-
 df4 = pd.read_csv('table.csv')
 
 
@@ -336,3 +346,9 @@ df2.to_excel(writer, sheet_name = 'CoordinatedData')
 df3.to_excel(writer, sheet_name = 'Reviews' )
 df4.to_excel(writer, sheet_name = 'ProductSizeTable', index=False )
 writer.close()
+
+# Remove unnecessary files
+os.remove('productData.csv')
+os.remove('coordinateData.csv')
+os.remove('ratingData.csv')
+os.remove('table.csv')

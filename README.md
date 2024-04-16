@@ -1,3 +1,6 @@
+![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2FAklimaRimi%2FBreadcrumbsAdidas-product-info-Web-crawling-&label=Reads&countColor=%23263759)
+
+
 # Adidas-product-info-Web-crawling 
 
 This project as technical test. Thank you for this opportunity.

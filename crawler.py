@@ -347,8 +347,3 @@ df3.to_excel(writer, sheet_name = 'Reviews' )
 df4.to_excel(writer, sheet_name = 'ProductSizeTable', index=False )
 writer.close()
 
-# Remove unnecessary files
-os.remove('productData.csv')
-os.remove('coordinateData.csv')
-os.remove('ratingData.csv')
-os.remove('table.csv')
